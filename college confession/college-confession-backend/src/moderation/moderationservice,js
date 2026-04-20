@@ -1,0 +1,33 @@
+import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
+import { db } from "../firebase.js";
+
+const BAD_WORDS = ["fuck","shit","bitch","asshole","bastard","retard","faggot","nigger","cunt","whore","slut"];
+const REGEX = new RegExp(`\\b(${BAD_WORDS.join("|")})\\b`, "i");
+
+export const checkBadWords = (text) => REGEX.test(text);
+
+export async function isUserBanned(userId) {
+  const { banUntil } = (await getDoc(doc(db, "users", userId))).data() ?? {};
+  return banUntil ? banUntil.toDate() > new Date() : false;
+}
+
+export async function increaseWarning(userId) {
+  const ref = doc(db, "users", userId);
+  const data = (await getDoc(ref)).data();
+  const warnings = (data.warnings || 0) + 1;
+
+  if (warnings >= 3) {
+    const banUntil = Timestamp.fromDate(new Date(Date.now() + 3_600_000));
+    await updateDoc(ref, { warnings, banUntil });
+    return { banned: true, warnings };
+  }
+
+  await updateDoc(ref, { warnings });
+  return { banned: false, warnings };
+}
+
+export async function applyBan(userId) {
+  const banUntil = Timestamp.fromDate(new Date(Date.now() + 3_600_000));
+  await updateDoc(doc(db, "users", userId), { banUntil, warnings: 3 });
+  return banUntil;
+}

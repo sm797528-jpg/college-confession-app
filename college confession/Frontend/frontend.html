@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>College Confessions — Your College. Your Secrets.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #1a1a24;
+    --surface: rgba(255,255,255,0.04);
+    --surface2: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0f0f8;
+    --text2: #9999bb;
+    --text3: #5a5a7a;
+    --accent: #7c5cfc;
+    --accent2: #c084fc;
+    --accent3: #f472b6;
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --glow: rgba(124,92,252,0.25);
+  }
+  [data-theme="light"] {
+    --bg: #f4f4f9;
+    --bg2: #eaeaf5;
+    --bg3: #ddddf0;
+    --surface: rgba(0,0,0,0.04);
+    --surface2: rgba(0,0,0,0.07);
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text: #0f0f1a;
+    --text2: #44446a;
+    --text3: #9999bb;
+    --glow: rgba(124,92,252,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* TYPOGRAPHY */
+  h1, h2, h3, h4 { font-family: 'Syne', sans-serif; font-weight: 800; line-height: 1.1; }
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    padding: 6px 14px;
+    border: 1px solid rgba(192,132,252,0.25);
+    border-radius: 100px;
+    background: rgba(192,132,252,0.08);
+    margin-bottom: 1.2rem;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 5%;
+    background: rgba(10,10,15,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.4s;
+  }
+  [data-theme="light"] nav { background: rgba(244,244,249,0.7); }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+  }
+  .logo span { font-weight: 400; opacity: 0.7; }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    width: 48px; height: 26px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 100px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s;
+    flex-shrink: 0;
+  }
+  .theme-toggle::after {
+    content: '🌙';
+    position: absolute;
+    top: 2px; left: 3px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.3s;
+  }
+  [data-theme="light"] .theme-toggle::after { content: '☀️'; transform: translateX(22px); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: all 0.25s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    box-shadow: 0 0 30px var(--glow);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 40px var(--glow); }
+  .btn-ghost {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { background: var(--surface2); border-color: var(--accent); }
+
+  /* HAMBURGER */
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s; }
+
+  /* MOBILE NAV */
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    top: 60px; left: 0; right: 0;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 5%;
+    z-index: 998;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { color: var(--text2); text-decoration: none; font-size: 1rem; font-weight: 500; padding: 8px 0; border-bottom: 1px solid var(--border); }
+
+  /* SECTIONS */
+  section { padding: 100px 5%; }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 50%, rgba(124,92,252,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 30%, rgba(244,114,182,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 60% 80%, rgba(192,132,252,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.25);
+    color: var(--green);
+    font-size: 0.78rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge::before { content: '●'; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    letter-spacing: -0.03em;
+    margin-bottom: 1.2rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 .gradient-text {
+    background: linear-gradient(135deg, var(--accent), var(--accent2) 50%, var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--text2);
+    margin-bottom: 2rem;
+    max-width: 440px;
+    font-weight: 300;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 2.5rem;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .stat { 
+    text-align: center
+  }
+  .stat-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--text); }
+  .stat-label { font-size: 0.78rem; color: var(--text3); margin-top: 2px; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+
+  /* HERO CARD PREVIEW */
+  .hero-preview {
+    position: relative;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .preview-card {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(10px);
+    position: relative;
+    transition: transform 0.3s;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .preview-card:hover { transform: translateY(-4px); }
+  .preview-card-float {
+    position: absolute;
+    right: -20px;
+    top: 40px;
+    width: 200px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .preview-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .preview-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .preview-name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+  .preview-time { font-size: 0.72rem; color: var(--text3); }
+  .preview-text { font-size: 0.88rem; color: var(--text2); line-height: 1.55; }
+  .preview-actions { display: flex; gap: 12px; margin-top: 14px; }
+  .preview-action { display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text3); cursor: pointer; transition: color 0.2s; }
+  .preview-action:hover { color: var(--accent3); }
+  .preview-action.liked { color: var(--accent3); }
+
+  /* FEATURES */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 3rem;
+  }
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .feature-card:hover::before { opacity: 0.05; }
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    position: relative; z-index: 1;
+  }
+  .feature-card h3 { font-size: 1rem; margin-bottom: 8px; position: relative; z-index: 1; }
+  .feature-card p { font-size: 0.85rem; color: var(--text2); line-height: 1.6; position: relative; z-index: 1; }
+
+  /* HOW IT WORKS */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 3rem;
+    position: relative;
+  }
+  .how-grid::before {
+    content: '';
+    position: absolute;
+    top: 36px; left: 10%; right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .step-card {
+    text-align: center;
+    padding: 28px 20px;
+    position: relative;
+  }
+  .step-num {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: #fff;
+    margin: 0 auto 16px;
+    box-shadow: 0 8px 30px var(--glow);
+    position: relative; z-index: 1;
+  }
+  .step-card h3 { font-size: 1rem; margin-bottom: 8px; }
+  .step-card p { font-size: 0.83rem; color: var(--text2); }
+
+  /* CONFESSION UI */
+  .confession-section { background: var(--bg2); }
+  .confession-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 40px;
+    margin-top: 3rem;
+    align-items: start;
+  }
+  .confession-box {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 24px;
+    padding: 28px;
+    position: sticky;
+    top: 90px;
+  }
+  .confession-box h3 { font-size: 1.1rem; margin-bottom: 6px; }
+  .confession-box p.sub { font-size: 0.82rem; color: var(--text3); margin-bottom: 20px; }
+  .college-select, .confession-textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+  .college-select:focus, .confession-textarea:focus { border-color: var(--accent); }
+  .confession-textarea { resize: none; height: 120px; line-height: 1.6; }
+  .college-select option { background: var(--bg2); }
+  .confession-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .anon-tag { font-size: 0.78rem; color: var(--accent2); display: flex; align-items: center; gap: 6px; }
+  .char-count { font-size: 0.75rem; color: var(--text3); }
+
+  /* CONFESSION FEED */
+  .feed { display: flex; flex-direction: column; gap: 16px; }
+  .conf-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px;
+    transition: all 0.3s;
+  }
+  .conf-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .conf-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .conf-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .conf-name { font-weight: 600; font-size: 0.88rem; color: var(--text); }
+  .conf-meta { font-size: 0.75rem; color: var(--text3); }
+  .conf-college-tag {
+    margin-left: auto;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: rgba(124,92,252,0.12);
+    color: var(--accent2);
+    border: 1px solid rgba(124,92,252,0.2);
+    white-space: nowrap;
+  }
+  .conf-text { font-size: 0.9rem; color: var(--text2); line-height: 1.65; margin-bottom: 16px; }
+  .conf-actions { display: flex; align-items: center; gap: 8px; }
+  .conf-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 7px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .conf-btn:hover { border-color: var(--border2); color: var(--text); }
+  .conf-btn.like:hover, .conf-btn.liked { border-color: var(--accent3); color: var(--accent3); background: rgba(248,113,113,0.08); }
+  .conf-btn.report:hover { border-color: var(--yellow); color: var(--yellow); }
+  .conf-btn.share:hover { border-color: var(--accent); color: var(--accent); }
+  .conf-btn.trending { margin-left: auto; background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.25); color: var(--yellow); }
+
+  /* EVENTS */
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 3rem;
+  }
+  .event-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .event-card:hover { transform: translateY(-6px); border-color: var(--border2); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .event-banner {
+    height: 120px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .event-banner::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+  }
+  .event-type-badge {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-size: 0.68rem;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 600;
+    z-index: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .event-body { padding: 20px; }
+  .event-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .event-desc { font-size: 0.82rem; color: var(--text2); line-height: 1.55; margin-bottom: 14px; }
+  .event-meta { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+  .event-meta-row { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--text3); }
+  .event-meta-row span:first-child { font-size: 0.9rem; }
+
+  /* PRICING */
+  .pricing-section { background: var(--bg2); }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 760px;
+    margin: 3rem auto 0;
+  }
+  .pricing-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .pricing-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(124,92,252,0.1), rgba(192,132,252,0.05));
+    box-shadow: 0 0 60px rgba(124,92,252,0.15);
+  }
+  .pricing-card:hover { transform: translateY(-4px); }
+  .popular-badge {
+    position: absolute;
+    top: -12px; left: 50%; transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 16px;
+    border-radius: 100px;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+  .plan-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--text); margin-bottom: 4px; }
+  .plan-tagline { font-size: 0.8rem; color: var(--text3); margin-bottom: 20px; }
+  .plan-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 24px; }
+  .plan-price .amount { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.5rem; color: var(--text); }
+  .plan-price .period { font-size: 0.85rem; color: var(--text3); }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .plan-features li { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text2); }
+  .plan-features li::before { content: '✓'; color: var(--green); font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+  .plan-features li.no::before { content: '✗'; color: var(--text3); }
+  .plan-features li.no { color: var(--text3); }
+
+  /* CHAT */
+  .chat-section { background: var(--bg); }
+  .chat-container {
+    max-width: 620px;
+    margin: 3rem auto 0;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+  }
+  .chat-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .chat-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent3)); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .chat-hname { font-weight: 600; font-size: 0.9rem; }
+  .chat-status { font-size: 0.75rem; color: var(--green); display: flex; align-items: center; gap: 4px; }
+  .chat-status::before { content: '●'; font-size: 0.6rem; }
+  .chat-messages { padding: 20px; height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-track { background: transparent; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+  .msg { max-width: 75%; display: flex; flex-direction: column; gap: 4px; }
+  .msg.me { align-self: flex-end; align-items: flex-end; }
+  .msg-bubble {
+    padding: 10px 16px;
+    border-radius: 18px;
+    font-size: 0.87rem;
+    line-height: 1.5;
+  }
+  .msg.them .msg-bubble { background: var(--surface2); color: var(--text); border-bottom-left-radius: 4px; }
+  .msg.me .msg-bubble { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border-bottom-right-radius: 4px; }
+  .msg-time { font-size: 0.7rem; color: var(--text3); padding: 0 4px; }
+  .chat-input-row {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 10px; align-items: center;
+  }
+  .chat-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 10px 18px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .chat-input:focus { border-color: var(--accent); }
+  .chat-send {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .chat-send:hover { transform: scale(1.08); box-shadow: 0 4px 20px var(--glow); }
+
+  /* SAFETY */
+  .safety-section { background: var(--bg2); }
+  .safety-card {
+    max-width: 800px;
+    margin: 3rem auto 0;
+    background: linear-gradient(135deg, rgba(248,113,113,0.08), rgba(251,191,36,0.06));
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+  }
+  .safety-icon { font-size: 3rem; margin-bottom: 16px; }
+  .safety-card h3 { font-size: 1.5rem; margin-bottom: 12px; }
+  .safety-card p { color: var(--text2); max-width: 540px; margin: 0 auto 24px; line-height: 1.7; }
+  .safety-pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .safety-pill {
+    padding: 7px 16px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 60px 5% 30px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+  }
+  .footer-brand p { font-size: 0.85rem; color: var(--text3); margin-top: 12px; max-width: 260px; line-height: 1.7; }
+  .footer-col h4 { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 14px; font-family: 'DM Sans', sans-serif; }
+  .footer-col a { display: block; color: var(--text3); text-decoration: none; font-size: 0.85rem; margin-bottom: 10px; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--accent2); }
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.8rem; color: var(--text3);
+  }
+
+  /* SECTION TITLE */
+  .section-title { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; margin-bottom: 0.6rem; }
+  .section-sub { color: var(--text2); font-size: 1rem; max-width: 480px; font-weight: 300; }
+
+  /* DIVIDER */
+  .section-header { margin-bottom: 0; }
+
+  /* ANIMATIONS */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 6px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .events-grid { grid-template-columns: repeat(2, 1fr); }
+    .how-grid { grid-template-columns: repeat(2, 1fr); }
+    .how-grid::before { display: none; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 80px 5%; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-preview { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .confession-layout { grid-template-columns: 1fr; }
+    .events-grid { grid-template-columns: 1fr; }
+    .how-grid { grid-template-columns: 1fr 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+    .hero-stats { gap: 20px; }
+    .confession-box { position: static; }
+    .preview-card-float { display: none; }
+  }
+  @media (max-width: 480px) {
+    .how-grid { grid-template-columns: 1fr; }
+    .hero-actions { flex-direction: column; }
+    .hero-actions .btn { width: 100%; justify-content: center; }
+  }
+
+  /* GRADIENT BORDERS */
+  .grad-border {
+    position: relative;
+    background: var(--bg3);
+    border-radius: 22px;
+  }
+  .grad-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 23px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    z-index: -1;
+    opacity: 0.5;
+  }
+
+  /* TOASTER */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 0.88rem;
+    color: var(--text);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    z-index: 10000;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s;
+    max-width: 300px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .toast.show { transform: none; opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">College<span>Confessions</span></a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#confess">Confess</a>
+    <a href="#events">Events</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#chat">Chat</a>
+  </div>
+  <div class="nav-right">
+    <div class="theme-toggle" id="themeToggle" title="Toggle theme"></div>
+    <a href="#confess" class="btn btn-primary" style="padding:8px 18px;font-size:0.82rem;">Start Posting</a>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#features">Features</a>
+  <a href="#confess">Confess</a>
+  <a href="#events">Events</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#chat">Chat</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge">🟢 Live &amp; Anonymous</div>
+        <h1>Your College.<br><span class="gradient-text">Your Secrets.</span></h1>
+        <p>Share anonymous confessions, connect with your campus community, and discover what everyone's really thinking.</p>
+        <div class="hero-actions">
+          <a href="#confess" class="btn btn-primary" style="padding:14px 28px;font-size:0.95rem;">🔥 Start Posting</a>
+          <a href="#features" class="btn btn-ghost" style="padding:14px 28px;font-size:0.95rem;">Explore Features</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num">48K+</div>
+            <div class="stat-label">Confessions Posted</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">200+</div>
+            <div class="stat-label">Colleges</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">100%</div>
+            <div class="stat-label">Anonymous</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-preview">
+        <div class="preview-card" style="margin-right: 30px;">
+          <div class="preview-head">
+            <div class="preview-avatar" style="background: linear-gradient(135deg,#7c5cfc,#c084fc);">🦊</div>
+            <div>
+              <div class="preview-name">MidnightFoxIIT</div>
+              <div class="preview-time">2 min ago · IIT Bombay</div>
+            </div>
+            <div style="margin-left:auto;font-size:0.7rem;color:var(--yellow);">🔥 Trending</div>
+          </div>
+          <div class="preview-text">Submitted my assignment 3 mins before deadline and it's somehow my best work this semester. The pressure hits different at 11:57 PM 😭</div>
+          <div class="preview-actions">
+            <div class="preview-action liked">❤️ 412</div>
+            <div class="preview-action">💬 38</div>
+            <div class="preview-action">📤 Share</div>
+          </div>
+        </div>
+        <div class="preview-card-float">
+          <div class="preview-head" style="margin-bottom:8px;">
+            <div class="preview-avatar" style="background:linear-gradient(135deg,#f472b6,#fbbf24);width:28px;height:28px;font-size:0.85rem;">🐼</div>
+            <div>
+              <div class="preview-name" style="font-size:0.78rem;">LazyPandaDU</div>
+              <div class="preview-time" style="font-size:0.68rem;">just now</div>
+            </div>
+          </div>
+          <div class="preview-text" style="font-size:0.78rem;">My professor literally said "you'll thank me later" after giving us a surprise quiz 💀</div>
+          <div class="preview-actions" style="margin-top:10px;">
+            <div class="preview-action" style="font-size:0.73rem;">❤️ 89</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">✨ Features</div>
+      <h2 class="section-title">Everything you need to<br>spill the tea 🍵</h2>
+      <p class="section-sub">Built for college students who have a lot to say but prefer to stay anonymous.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">🕵️</div>
+        <h3>100% Anonymous</h3>
+        <p>Your identity is never revealed. Get a quirky auto-generated name and post freely without any worries.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🏫</div>
+        <h3>College-Based Feed</h3>
+        <p>See confessions only from your college, plus explore trending posts from across the network.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">💬</div>
+        <h3>Real-Time Chat</h3>
+        <p>Respond to confessions or DM anonymously. Keep the conversation going without breaking your cover.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🛡️</div>
+        <h3>Safe & Moderated</h3>
+        <p>Our AI moderation + human review keeps the platform respectful and free from harassment or bullying.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🔥</div>
+        <h3>Trending Confessions</h3>
+        <p>Discover what's blowing up across colleges. Like, share, and comment on the hottest posts on campus.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">📣</div>
+        <h3>Event Promotions</h3>
+        <p>Promote your college fests, hackathons & workshops to thousands of students across nearby colleges.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" style="background:var(--bg2);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">⚙️ How It Works</div>
+      <h2 class="section-title">Post in 4 simple steps</h2>
+      <p class="section-sub">No sign-up drama. No identity leaks. Just pure campus vibes.</p>
+    </div>
+    <div class="how-grid">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <h3>Pick Your College</h3>
+        <p>Select from 200+ Indian colleges to join your campus community feed.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">2</div>
+        <h3>Write Your Confession</h3>
+        <p>Type anything — academic stress, crushes, funny moments, campus drama, or anything on your mind.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">3</div>
+        <h3>Get a Funny Alias</h3>
+        <p>We'll auto-assign a hilarious anonymous name like "ConfusedCatVITian" to protect your identity.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">4</div>
+        <h3>Post & Interact</h3>
+        <p>Hit post, get likes, comments, and watch your confession go viral across campus!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONFESSION UI -->
+<section class="confession-section" id="confess">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">📝 Confess Now</div>
+      <h2 class="section-title">What's on your mind?</h2>
+      <p class="section-sub">Share anonymously. No judgment, only vibes.</p>
+    </div>
+    <div class="confession-layout">
+      <div class="confession-box reveal">
+        <h3>Post Anonymously 🕵️</h3>
+        <p class="sub">You'll be assigned a random funny alias — no one will ever know it's you.</p>
+        <select class="college-select" id="collegeSelect">
+          <option value="">🏫 Select your college...</option>
+          <option>IIT Bombay</option>
+          <option>IIT Delhi</option>
+          <option>BITS Pilani</option>
+          <option>VIT Vellore</option>
+          <option>Delhi University</option>
+          <option>Jadavpur University</option>
+          <option>NIT Trichy</option>
+          <option>IIIT Hyderabad</option>
+          <option>Manipal University</option>
+          <option>Christ University</option>
+        </select>
+        <textarea class="confession-textarea" id="confessionText" placeholder="Start typing your confession... (max 280 characters)" maxlength="280"></textarea>
+        <div class="confession-footer">
+          <div class="anon-tag">🎭 <span id="aliasDisplay">Alias will appear here</span></div>
+          <div class="char-count"><span id="charCount">0</span>/280</div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:16px;justify-content:center;padding:14px;" onclick="postConfession()">🔥 Post Confession</button>
+      </div>
+
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;">🔥 Campus Feed</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-ghost" style="padding:6px 14px;font-size:0.78rem;" onclick="filterFeed('all')">All</button>
+            <button class="btn btn-ghost" style="padding:6px 14px;font-size:0.78rem;" onclick="filterFeed('trending')">Trending</button>
+          </div>
+        </div>
+        <div class="feed" id="confessionFeed">
+          <!-- Cards injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section id="events">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">📣 Events</div>
+      <h2 class="section-title">Discover Campus Events</h2>
+      <p class="section-sub">Hackathons, fests, workshops — find what's happening near you and at your college.</p>
+    </div>
+    <div class="events-grid">
+      <div class="event-card reveal">
+        <div class="event-banner" style="background:linear-gradient(135deg,#1a1a2e,#7c5cfc44);">
+          💻
+          <div class="event-type-badge" style="background:rgba(124,92,252,0.9);color:#fff;">Hackathon</div>
+        </div>
+        <div class="event-body">
+          <div class="event-title">HackVerse 5.0</div>
+          <div class="event-desc">36-hour national hackathon with ₹5L prize pool. Build solutions that matter for social good.</div>
+          <div class="event-meta">
+            <div class="event-meta-row"><span>🏫</span> NITK Surathkal</div>
+            <div class="event-meta-row"><span>📅</span> May 10–11, 2025</div>
+            <div class="event-meta-row"><span>🌐</span> Open to all colleges</div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="showToast('Redirecting to HackVerse registration! 🚀')">Register Now →</button>
+        </div>
+      </div>
+      <div class="event-card reveal">
+        <div class="event-banner" style="background:linear-gradient(135deg,#1a0a2e,#f472b644);">
+          🎭
+          <div class="event-type-badge" style="background:rgba(244,114,182,0.9);color:#fff;">Cultural Fest</div>
+        </div>
+        <div class="event-body">
+          <div class="event-title">Mood Indigo 2025</div>
+          <div class="event-desc">Asia's largest college cultural festival returns with 3 days of music, art, and insane performances.</div>
+          <div class="event-meta">
+            <div class="event-meta-row"><span>🏫</span> IIT Bombay</div>
+            <div class="event-meta-row"><span>📅</span> Dec 19–21, 2025</div>
+            <div class="event-meta-row"><span>🎟️</span> Passes from ₹499</div>
+          </div>
+          <button class="btn btn-ghost" style="width:100%;justify-content:center;" onclick="showToast('Opening Mood Indigo page! 🎭')">Learn More →</button>
+        </div>
+      </div>
+      <div class="event-card reveal">
+        <div class="event-banner" style="background:linear-gradient(135deg,#0a1a1a,#34d39944);">
+          🤖
+          <div class="event-type-badge" style="background:rgba(52,211,153,0.9);color:#000;">Workshop</div>
+        </div>
+        <div class="event-body">
+          <div class="event-title">AI/ML Bootcamp</div>
+          <div class="event-desc">Hands-on 2-day workshop on Machine Learning & Deep Learning by IITian mentors. Limited seats!</div>
+          <div class="event-meta">
+            <div class="event-meta-row"><span>🏫</span> Online + Delhi NCR</div>
+            <div class="event-meta-row"><span>📅</span> May 3–4, 2025</div>
+            <div class="event-meta-row"><span>💰</span> Free for students</div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;background:linear-gradient(135deg,#34d399,#059669);" onclick="showToast('Registered for AI/ML Bootcamp! ✅')">Register Free →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="container" style="text-align:center;">
+    <div class="section-header reveal">
+      <div class="section-tag">💰 Promote Your Event</div>
+      <h2 class="section-title">Reach More Students</h2>
+      <p class="section-sub" style="margin:0 auto;">Promote your college event to the right audience — from your campus to the entire city.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="plan-name">🏫 Basic Plan</div>
+        <div class="plan-tagline">Perfect for small campus events</div>
+        <div class="plan-price">
+          <div class="amount">₹299</div>
+          <div class="period">/ event</div>
+        </div>
+        <ul class="plan-features">
+          <li>Promoted within your college only</li>
+          <li>Visible to same-college students</li>
+          <li>Listed for up to 14 days</li>
+          <li>Event card with CTA button</li>
+          <li>Basic analytics dashboard</li>
+          <li class="no">Cross-college promotion</li>
+          <li class="no">Nearby college reach</li>
+          <li class="no">Priority placement</li>
+        </ul>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;padding:14px;" onclick="showToast('Basic Plan selected! 🎉')">Choose Basic Plan</button>
+      </div>
+      <div class="pricing-card featured reveal">
+        <div class="popular-badge">⚡ Most Popular</div>
+        <div class="plan-name">🌐 Premium Plan</div>
+        <div class="plan-tagline">Maximum reach across colleges</div>
+        <div class="plan-price">
+          <div class="amount">₹799</div>
+          <div class="period">/ event</div>
+        </div>
+        <ul class="plan-features">
+          <li>Promoted across 50+ colleges</li>
+          <li>Same city &amp; area colleges</li>
+          <li>Related college network</li>
+          <li>Listed for up to 30 days</li>
+          <li>Priority event card placement</li>
+          <li>Advanced analytics &amp; insights</li>
+          <li>Social sharing boost</li>
+          <li>Featured homepage banner</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;" onclick="showToast('Premium Plan selected! 🚀 Check your email.')">Choose Premium Plan</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAT -->
+<section class="chat-section" id="chat">
+  <div class="container" style="text-align:center;">
+    <div class="section-header reveal">
+      <div class="section-tag">💬 Anonymous Chat</div>
+      <h2 class="section-title">Talk without revealing yourself</h2>
+      <p class="section-sub" style="margin:0 auto;">Respond to confessions. Make connections. Stay mysterious. 😏</p>
+    </div>
+    <div class="chat-container reveal">
+      <div class="chat-header">
+        <div class="chat-avatar">🦉</div>
+        <div>
+          <div class="chat-hname">NocturnalOwlBITS</div>
+          <div class="chat-status">Online now</div>
+        </div>
+        <div style="margin-left:auto;font-size:0.75rem;color:var(--text3);">🔒 End-to-end anonymous</div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg them">
+          <div class="msg-bubble">Did you also submit that assignment at literally 11:59 PM? 💀</div>
+          <div class="msg-time">2:14 PM</div>
+        </div>
+        <div class="msg me">
+          <div class="msg-bubble">BRO YES. My fingers were shaking the entire time 😭</div>
+          <div class="msg-time">2:15 PM</div>
+        </div>
+        <div class="msg them">
+          <div class="msg-bubble">The professor has to know right?? Like there's no way they don't notice 400 submissions in the last 2 minutes</div>
+          <div class="msg-time">2:15 PM</div>
+        </div>
+        <div class="msg me">
+          <div class="msg-bubble">They 100% know and they simply don't care anymore 😂</div>
+          <div class="msg-time">2:16 PM</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <div style="font-size:1.2rem;cursor:pointer;" onclick="showToast('Emoji picker coming soon! 😄')">😊</div>
+        <input class="chat-input" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMessage()">
+        <button class="chat-send" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAFETY -->
+<section class="safety-section" id="safety">
+  <div class="container" style="text-align:center;">
+    <div class="section-header reveal">
+      <div class="section-tag">🛡️ Community Safety</div>
+      <h2 class="section-title">We keep it safe here</h2>
+    </div>
+    <div class="safety-card reveal">
+      <div class="safety-icon">🚫</div>
+      <h3>No Bullying Allowed. Be Respectful.</h3>
+      <p>College Confessions is a safe space for everyone. Harassment, hate speech, and targeted bullying will result in immediate removal and permanent bans. Every confession goes through our moderation system before it goes live.</p>
+      <div class="safety-pills">
+        <div class="safety-pill">🤖 AI Moderation</div>
+        <div class="safety-pill">👥 Human Review</div>
+        <div class="safety-pill">🚩 User Reporting</div>
+        <div class="safety-pill">⚡ Instant Removal</div>
+        <div class="safety-pill">🔒 Anonymous Safety</div>
+        <div class="safety-pill">📧 24/7 Support</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo" style="font-size:1.2rem;">College<span>Confessions</span></a>
+      <p>The anonymous platform for college students to share, connect, and discover — all without revealing who you are.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="#confess">Confessions</a>
+      <a href="#events">Events</a>
+      <a href="#pricing">Promote</a>
+      <a href="#chat">Chat</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#" onclick="showToast('About page coming soon!')">About Us</a>
+      <a href="#" onclick="showToast('Blog coming soon!')">Blog</a>
+      <a href="#" onclick="showToast('Careers page loading...')">Careers</a>
+      <a href="#" onclick="showToast('Press kit ready soon!')">Press Kit</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#" onclick="showToast('Privacy Policy loading...')">Privacy Policy</a>
+      <a href="#" onclick="showToast('Terms loading...')">Terms of Service</a>
+      <a href="#" onclick="showToast('Community guidelines loading...')">Community Guidelines</a>
+      <a href="#" onclick="showToast('Contact: hello@collegeconfessions.in')">Contact Us</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2025 College Confessions. Made with 💜 for Indian college students.</div>
+    <div>🔒 100% Anonymous · 🛡️ Safe Space · 🏫 200+ Colleges</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// DATA
+const aliases = ["MidnightFoxIIT","SleepyPandaBITS","ChaosMonkeyVIT","NocturnalOwlDU","GhostCatNIT","ConfusedLlamaIISc","LazyKoalaManipal","PixelWizardJU","CrypticRaccoonIIIT","ShadowFoxBITM"];
+const colors = ["#7c5cfc","#c084fc","#f472b6","#34d399","#fbbf24","#60a5fa","#fb923c","#a78bfa"];
+const emojis = ["🦊","🐼","🦉","🐱","🐸","🦝","🐧","🦄","🐨","🦁","🐺","🐻"];
+const confessions = [
+  {alias:"MidnightFoxIIT",emoji:"🦊",college:"IIT Bombay",time:"2 min ago",text:"Submitted my assignment 3 mins before deadline and it's somehow my best work this semester. The pressure hits different at 11:57 PM 😭",likes:412,trending:true},
+  {alias:"SleepyPandaBITS",emoji:"🐼",college:"BITS Pilani",time:"8 min ago",text:"My professor said 'I'll give you all an extension' and then didn't. That is genuinely the most villainous thing anyone has done to me.",likes:287,trending:false},
+  {alias:"ChaosMonkeyVIT",emoji:"🦝",college:"VIT Vellore",time:"15 min ago",text:"Accidentally called my professor 'mom' in front of the entire class. I think I need to transfer colleges 🫠",likes:1204,trending:true},
+  {alias:"NocturnalOwlDU",emoji:"🦉",college:"Delhi University",time:"22 min ago",text:"The library is my second home because my roommate watches reels at 3 AM with full volume and I'm too scared to say anything.",likes:156,trending:false},
+  {alias:"GhostCatNIT",emoji:"🐱",college:"NIT Trichy",time:"35 min ago",text:"PSA: If your project group has been silent for 3 days and the deadline is tomorrow, you ARE the one who will do everything. I speak from experience. Every single time.",likes:891,trending:true},
+];
+
+// RENDER FEED
+function renderFeed(data) {
+  const feed = document.getElementById('confessionFeed');
+  feed.innerHTML = '';
+  data.forEach((c, i) => {
+    const color = colors[i % colors.length];
+    const card = document.createElement('div');
+    card.className = 'conf-card';
+    card.style.animationDelay = `${i * 0.1}s`;
+    card.innerHTML = `
+      <div class="conf-head">
+        <div class="conf-avatar" style="background:${color}22;border:1px solid ${color}44;">${c.emoji}</div>
+        <div>
+          <div class="conf-name">${c.alias}</div>
+          <div class="conf-meta">${c.time}</div>
+        </div>
+        <div class="conf-college-tag">${c.college}</div>
+      </div>
+      <div class="conf-text">${c.text}</div>
+      <div class="conf-actions">
+        <button class="conf-btn like" data-idx="${i}" onclick="toggleLike(this,${c.likes})">❤️ <span>${c.likes}</span></button>
+        <button class="conf-btn report" onclick="showToast('Post reported! Our team will review it. 🚩')">🚩 Report</button>
+        <button class="conf-btn share" onclick="showToast('Link copied to clipboard! 📤')">📤 Share</button>
+        ${c.trending ? '<button class="conf-btn trending">🔥 Trending</button>' : ''}
+      </div>`;
+    feed.appendChild(card);
+  });
+}
+renderFeed(confessions);
+
+function filterFeed(type) {
+  if(type === 'trending') renderFeed(confessions.filter(c => c.trending));
+  else renderFeed(confessions);
+}
+
+function toggleLike(btn, base) {
+  btn.classList.toggle('liked');
+  const span = btn.querySelector('span');
+  const isLiked = btn.classList.contains('liked');
+  span.textContent = isLiked ? base + 1 : base;
+  if(isLiked) showToast('You liked this confession! ❤️');
+}
+
+// ALIAS GENERATOR
+const collegeShorts = {"IIT Bombay":"IITian","IIT Delhi":"IITD","BITS Pilani":"BITSian","VIT Vellore":"VITian","Delhi University":"DUite","Jadavpur University":"JUster","NIT Trichy":"NITian","IIIT Hyderabad":"IIITian","Manipal University":"Manipali","Christ University":"Christan"};
+const prefixes = ["Midnight","Sleepy","Chaos","Nocturnal","Ghost","Confused","Lazy","Pixel","Cryptic","Shadow","Cosmic","Electric"];
+const animals = ["Fox","Panda","Monkey","Owl","Cat","Llama","Koala","Wizard","Raccoon","Bear","Penguin","Sloth"];
+
+document.getElementById('collegeSelect').addEventListener('change', function() {
+  const short = collegeShorts[this.value] || 'Student';
+  const alias = prefixes[Math.floor(Math.random()*prefixes.length)] + animals[Math.floor(Math.random()*animals.length)] + short;
+  document.getElementById('aliasDisplay').textContent = alias;
+});
+
+document.getElementById('confessionText').addEventListener('input', function() {
+  document.getElementById('charCount').textContent = this.value.length;
+});
+
+function postConfession() {
+  const college = document.getElementById('collegeSelect').value;
+  const text = document.getElementById('confessionText').value.trim();
+  const alias = document.getElementById('aliasDisplay').textContent;
+  if (!college) { showToast('⚠️ Please select your college first!'); return; }
+  if (!text || text.length < 10) { showToast('⚠️ Confession too short! Write at least 10 characters.'); return; }
+  const newConf = {
+    alias: alias !== 'Alias will appear here' ? alias : 'AnonymousGhost',
+    emoji: emojis[Math.floor(Math.random()*emojis.length)],
+    college,
+    time: 'just now',
+    text,
+    likes: 0,
+    trending: false
+  };
+  confessions.unshift(newConf);
+  renderFeed(confessions);
+  document.getElementById('confessionText').value = '';
+  document.getElementById('charCount').textContent = '0';
+  showToast('🔥 Confession posted! You\'re anonymous as ever.');
+}
+
+// CHAT
+const chatMessages = document.getElementById('chatMessages');
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const msg = document.createElement('div');
+  msg.className = 'msg me';
+  const now = new Date();
+  msg.innerHTML = `<div class="msg-bubble">${text}</div><div class="msg-time">${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')} PM</div>`;
+  chatMessages.appendChild(msg);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  input.value = '';
+  setTimeout(() => {
+    const replies = [
+      "lmao same energy 😭","IYKYK the struggle is REAL","Wait this literally happened to me last week??","Okay but like,,, are you okay though 💀","No bc WHY does this resonate so hard","The professors are NOT normal. Not even a little."];
+    const reply = document.createElement('div');
+    reply.className = 'msg them';
+    reply.innerHTML = `<div class="msg-bubble">${replies[Math.floor(Math.random()*replies.length)]}</div><div class="msg-time">${now.getHours()}:${String(now.getMinutes()+1).padStart(2,'0')} PM</div>`;
+    chatMessages.appendChild(reply);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }, 1200 + Math.random()*800);
+}
+
+// TOAST
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// THEME TOGGLE
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const html = document.documentElement;
+  html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+// HAMBURGER
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobileNav').classList.toggle('open');
+});
+document.querySelectorAll('.mobile-nav a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('mobileNav').classList.remove('open'));
+});
+
+// SCROLL REVEAL
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+revealEls.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

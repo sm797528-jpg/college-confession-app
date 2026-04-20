@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthed() { return request.auth != null; }
+    function isOwner(uid) { return request.auth.uid == uid; }
+
+    function userData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    function notBanned() {
+      let u = userData();
+      return u.banUntil == null || u.banUntil < request.time;
+    }
+    function hasCollege() {
+      return userData().college != null;
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthed() && isOwner(userId);
+      allow create: if isAuthed() && isOwner(userId);
+      // Block client writes to warnings/banUntil — backend/Cloud Functions only
+      allow update: if isAuthed() && isOwner(userId)
+        && !request.resource.data.diff(resource.data)
+            .affectedKeys().hasAny(["warnings", "banUntil"]);
+    }
+
+    match /posts/{postId} {
+      allow read: if isAuthed() && hasCollege();
+      allow create: if isAuthed() && hasCollege() && notBanned()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 1000;
+      allow update, delete: if false;
+
+      match /likes/{uid} {
+        allow read: if isAuthed();
+        allow create: if isAuthed() && isOwner(uid);
+        allow update, delete: if false;
+      }
+      match /reports/{uid} {
+        allow create: if isAuthed() && isOwner(uid);
+        allow read, update, delete: if false;
+      }
+    }
+
+    match /chat/{msgId} {
+      allow read: if isAuthed() && hasCollege();
+      allow create: if isAuthed() && hasCollege() && notBanned()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 500;
+      allow update, delete: if false;
+    }
+
+    match /events/{eventId} {
+      allow read: if isAuthed() && hasCollege();
+      allow create: if isAuthed() && hasCollege()
+        && request.resource.data.createdBy == request.auth.uid;
+      allow update: if isAuthed() && resource.data.createdBy == request.auth.uid
+        && !request.resource.data.diff(resource.data)
+            .affectedKeys().hasAny(["paymentStatus", "planType"]);
+      allow delete: if false;
+    }
+
+    match /colleges/{id} {
+      allow read: if isAuthed();
+      allow write: if false;
+    }
+  }
+}

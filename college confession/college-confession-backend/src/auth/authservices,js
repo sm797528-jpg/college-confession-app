@@ -1,0 +1,33 @@
+import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { auth, db, googleProvider } from "../firebase.js";
+
+export async function loginUser() {
+  const { user } = await signInWithPopup(auth, googleProvider);
+  const ref = doc(db, "users", user.uid);
+  if (!(await getDoc(ref)).exists()) {
+    await setDoc(ref, {
+      userId: user.uid,
+      email: user.email,
+      college: null,
+      warnings: 0,
+      banUntil: null,
+      createdAt: serverTimestamp(),
+    });
+  }
+  return user;
+}
+
+export async function selectCollege(userId, college) {
+  if (!college?.trim()) throw new Error("College required");
+  await updateDoc(doc(db, "users", userId), { college: college.trim() });
+}
+
+export async function getUserProfile(userId) {
+  const snap = await getDoc(doc(db, "users", userId));
+  if (!snap.exists()) throw new Error("User not found");
+  return snap.data();
+}
+
+export const logoutUser = () => signOut(auth);
+export const onAuthChange = (cb) => onAuthStateChanged(auth, cb);

@@ -1,0 +1,50 @@
+/**
+ * College Confessions — Usage Examples
+ * Import only what you need in your frontend.
+ */
+
+import { loginUser, selectCollege, logoutUser } from "../src/auth/authservices.js";
+import { createPost, fetchPosts, fetchTrendingPosts, likePost, reportPost } from "../src/confession/confessionservice.js";
+import { sendMessage, fetchChat } from "../src/chat/chatservice.js";
+import { createEvent, fetchEvents } from "../src/events/eventservice.js";
+import { initiatePayment, updatePaymentStatus } from "../src/events/paymentservice.js";
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+const user = await loginUser();                        // Google popup
+await selectCollege(user.uid, "MIT");
+
+// ── CONFESSIONS ───────────────────────────────────────────────────────────────
+const postId = await createPost(user.uid, "MIT", "Finals are a myth.");
+
+const unsubPosts = fetchPosts("MIT", (posts) => console.log(posts));
+const unsubTrending = fetchTrendingPosts("MIT", (posts) => console.log(posts));
+
+await likePost(postId, user.uid);
+await reportPost(postId, user.uid);
+
+// ── CHAT ──────────────────────────────────────────────────────────────────────
+await sendMessage(user.uid, "MIT", "Anyone else survived OS yet?");
+const unsubChat = fetchChat("MIT", (msgs) => console.log(msgs));
+
+// ── EVENTS ────────────────────────────────────────────────────────────────────
+const userCollegeMeta = { city: "Cambridge", region: "Northeast", groups: ["stem-focused"] };
+
+const eventId = await createEvent(user.uid, "MIT", {
+  title: "Hackathon Night",
+  description: "Build something wild",
+  date: "2025-02-14T18:00:00",
+}, "premium");
+
+const unsubEvents = fetchEvents("MIT", userCollegeMeta, (events) => console.log(events));
+
+// ── PAYMENT (placeholder) ─────────────────────────────────────────────────────
+const order = await initiatePayment({ eventId, userId: user.uid, planType: "premium", amount: 499 });
+// After payment confirmation from webhook:
+await updatePaymentStatus(eventId, "paid", "premium");
+
+// ── CLEANUP ───────────────────────────────────────────────────────────────────
+unsubPosts();
+unsubTrending();
+unsubChat();
+unsubEvents();
+await logoutUser();
